@@ -101,3 +101,9 @@ The product should hide financial complexity from the user.
 
 The user should feel that the system understands their lifestyle and creates
 a realistic financial plan specifically for them.
+
+## Current Status
+
+- Frontend MVP (адаптивное интервью) реализован в `frontend/`.
+- Реализованы компоненты вопросов: `currency`, `single_choice`, `number`, `yes_no`.
+- Backend и AI-логика выбора вопросов находятся в стадии проектирования/реализации.

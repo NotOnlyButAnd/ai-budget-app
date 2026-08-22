@@ -1,6 +1,11 @@
 # План: веб-интерфейс MVP (адаптивное интервью)
 
+## Статус
+
+✅ Реализовано. Frontend MVP находится в `frontend/`.
+
 ## Цель
+
 Создать frontend-часть MVP — страницу адаптивного интервью, которая общается с backend по REST API. Backend будет реализован позже, поэтому сначала используется mock API модуль.
 
 ## Архитектурные решения
@@ -17,7 +22,7 @@
 | Рендеринг компонентов | Прямой маппинг `component` → React-компонент |
 | Валидация ответов | Только на backend; frontend отображает ошибки из API |
 | Персистентность сессии | `session_id` сохраняется в `localStorage` |
-| Мокирование backend | Простой mock API модуль (`api/mockClient.ts`), переключаемый через env |
+| Мокирование backend | Простой mock API модуль (`frontend/src/api/mockClient.ts`), переключаемый через env |
 
 ## API-контракт (frontend → backend)
 
@@ -94,7 +99,7 @@ interface YesNoQuestion extends BaseQuestion {
 ## Структура проекта
 
 ```
-src/
+frontend/src/
   api/
     client.ts              # Функции для реальных вызовов backend (заглушки)
     mockClient.ts          # Mock-реализация API
@@ -108,16 +113,13 @@ src/
     QuestionRenderer.tsx   # Маппинг component → компонент + общая обёртка
     InterviewContainer.tsx # Основной контейнер интервью
     InterviewHeader.tsx    # Хедер (логотип, прогресс)
-    InterviewFooter.tsx    # Футер (необязательно)
   schemas/
     question.ts            # Zod-схемы для валидации ответов backend
-    answer.ts              # Типы ответов для каждого компонента
   types/
     interview.ts           # TypeScript-типы: Question, Answer, InterviewSession
   hooks/
     useInterview.ts        # TanStack Query хуки для создания сессии и отправки ответов
   lib/
-    storage.ts             # Работа с localStorage (session_id)
     utils.ts               # Утилиты
   App.tsx
   main.tsx
@@ -131,19 +133,19 @@ src/
   - через TanStack Query получает/отправляет вопросы;
   - рендерит `QuestionRenderer` с текущим вопросом.
 - `QuestionRenderer`:
-  - рендерит общую обёртку (фон, хедер, кнопку «Далее»);
+  - рендерит общую обёртку (кнопку «Далее»);
   - по полю `question.component` выбирает конкретный компонент вопроса;
-  - передаёт `data` и callback `onChange(value)` в компонент вопроса;
+  - передаёт `label`, `description`, `required`, `data` и callback `onChange(value)` в компонент вопроса;
   - при нажатии «Далее» отправляет ответ через TanStack Query.
 - Компоненты вопросов (`CurrencyQuestion`, `SingleChoiceQuestion`, `NumberQuestion`, `YesNoQuestion`):
-  - получают `data` и `onChange`;
+  - получают `data`, `label`, `description` и `onChange`;
   - рендерят собственный `label` и `description`;
   - управляют только своим input-состоянием;
   - не отправляют ответ сами.
 
-## Mock API (`api/mockClient.ts`)
+## Mock API (`frontend/src/api/mockClient.ts`)
 
-Реализовать простую конечную последовательность вопросов, имитирующую backend:
+Реализована простая конечная последовательность вопросов, имитирующая backend:
 
 1. `currency` — «Какой ваш ежемесячный доход?»
 2. `single_choice` — «Тип жилья» (аренда / ипотека / собственное / с родителями)
@@ -152,21 +154,17 @@ src/
 5. `currency` — «Сколько вы тратите на еду в месяц?»
 6. Завершение (`completed: true`).
 
-Mock должен сохранять ответы в памяти и возвращать следующий вопрос по порядку.
+Mock сохраняет ответы в памяти и возвращает следующий вопрос по порядку.
 
-## Этапы реализации
+## Запуск
 
-1. Инициализировать проект Vite + React + TypeScript.
-2. Установить зависимости: Tailwind CSS, shadcn/ui, TanStack Query, Zod, axios/fetch.
-3. Настроить Tailwind и shadcn/ui для Vite.
-4. Определить TypeScript-типы и Zod-схемы в `src/types/` и `src/schemas/`.
-5. Реализовать `api/mockClient.ts` с mock-логикой интервью.
-6. Реализовать `api/client.ts` как заглушки под будущий FastAPI backend.
-7. Создать компоненты вопросов (`CurrencyQuestion`, `SingleChoiceQuestion`, `NumberQuestion`, `YesNoQuestion`).
-8. Создать `QuestionRenderer` с прямым маппингом.
-9. Создать `InterviewContainer` с TanStack Query, `localStorage` и flow интервью.
-10. Подключить `App.tsx` и убедиться, что интервью проходится от начала до `completed: true`.
-11. Проверить, что при обновлении страницы интервью восстанавливается по `session_id`.
+```powershell
+cd frontend
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+npm.cmd run dev
+```
+
+Открывается http://localhost:5173/.
 
 ## Границы MVP (что НЕ входит)
 

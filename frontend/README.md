@@ -1,32 +1,55 @@
-# React + TypeScript + Vite
+# AI Budget — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Frontend-часть AI-ассистента для управления личными финансами. Реализует адаптивное интервью, которое в дальнейшем будет формировать персонализированный бюджет.
 
-Currently, two official plugins are available:
+## Технологии
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19
+- Vite 6
+- TypeScript 6
+- Tailwind CSS 4
+- shadcn/ui
+- TanStack Query
+- Zod
 
-## React Compiler
+## Структура
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```
+src/
+  api/              # API клиент (mock + заглушка под FastAPI)
+  components/       # React-компоненты
+  hooks/            # TanStack Query хуки
+  schemas/          # Zod-схемы
+  types/            # TypeScript-типы
+  lib/              # Утилиты
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Запуск
+
+```powershell
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+npm.cmd run dev
+```
+
+Приложение откроется по адресу http://localhost:5173/.
+
+## Сборка
+
+```powershell
+npm.cmd run build
+```
+
+## Переключение на реальный backend
+
+По умолчанию используется `mockClient.ts`. Чтобы подключить реальный FastAPI backend, установите env-переменную:
+
+```powershell
+$env:VITE_USE_MOCK_API="false"
+npm.cmd run dev
+```
+
+## Особенности
+
+- Интервью управляется backend (server-driven).
+- Список разрешённых UI-компонентов вопросов фиксирован: `currency`, `single_choice`, `number`, `yes_no`.
+- `session_id` сохраняется в `localStorage`.

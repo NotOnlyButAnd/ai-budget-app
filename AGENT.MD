@@ -7,10 +7,6 @@ recommendations.
 
 ## How to Work
 
-Do not immediately write code.
-
-First help us make architectural decisions.
-
 For each significant decision:
 
 1. Explain the problem.
@@ -55,8 +51,22 @@ AI must never be allowed to:
 - perform critical calculations
 - directly modify important data without validation
 
+## Current Status
+
+Frontend MVP реализован в `frontend/`:
+
+- Адаптивное интервью с server-driven архитектурой.
+- 4 компонента вопросов: `currency`, `single_choice`, `number`, `yes_no`.
+- Mock backend и API-контракт готовы.
+- `session_id` сохраняется в `localStorage`.
+
 ## Current Goal
 
-Design the MVP architecture collaboratively.
+Реализовать backend для адаптивного интервью на FastAPI:
 
-Start with the Adaptive Interview system.
+1. Эндпоинты `POST /api/interviews`, `GET /api/interviews/{id}/question`, `POST /api/interviews/{id}/answers`.
+2. Детерминированную валидацию ответов.
+3. Хранение состояния интервью.
+4. Интеграцию с AI для выбора следующего вопроса в контролируемых границах.
+
+После backend — реализовать Financial Profile, Wallet model и бюджет/кошельки.
